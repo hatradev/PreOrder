@@ -165,7 +165,8 @@ function updateCheckoutRow(rowId, quantity) {
 }
 
 function setQR() {
-    document.getElementById("qr_code").setAttribute("src", `https://img.vietqr.io/image/BIDV-0886542499-compact2.jpg?amount=${order.totalMoney}&addInfo=${order.name.replace(" ", "%20")+"%20"+order.phone}&accountName=Vo%20Thanh%20Tu`)
+	document.getElementById("transfer-message").innerText = `Message: SAB Preorder ${order.phone} ${order.name}`
+	document.getElementById("qr_code").setAttribute("src", `https://img.vietqr.io/image/BIDV-0886542499-print.jpg?amount=${order.totalMoney}&addInfo=SAB%20Preorder%20${order.phone}%20${order.name.replace(" ", "%20")}&accountName=Vo%20Thanh%20Tu`)
 }
 
 function toggleBody() {
@@ -216,11 +217,9 @@ document.getElementById('isTranferred').addEventListener('change', function() {
 
 document.getElementById('checkout-btn').addEventListener('click', function(event) {
     event.preventDefault(); 
-    if(validateCheckout()) {
-        updateCustomerInfo();
-        setQR();
-        toggleBody();
-    }
+	updateCustomerInfo();
+	setQR();
+	toggleBody();
 });
 
 document.getElementById('back-btn').addEventListener("click", function(event) {
