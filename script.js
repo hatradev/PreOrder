@@ -174,11 +174,50 @@ function toggleBody() {
     checkout.classList.toggle("hide");
 }
 
+async function isOutOfStock() {
+	return fetch('http://localhost:3000/storage', {
+		method: 'GET',
+	}).then(async (response) => {
+		const data_map = await response.json();
+		if (data_map["lanyard1Amount"] < order.lanyard1Amount)
+		{
+			alert("Out of stock for lanyard 1");
+			return true;
+		}
+		if (data_map["lanyard2Amount"] < order.lanyard2Amount)
+		{
+			alert("Out of stock for lanyard 2");
+			return true;
+		}
+		if (data_map["lanyard3Amount"] < order.lanyard3Amount)
+		{
+			alert("Out of stock for lanyard 3");
+			return true;
+		}
+		if (data_map["blackHolderAmount"] < order.blackHolderAmount)
+		{
+			alert("Out of stock for black holder");
+			return true;
+		}
+		if (data_map["grayHolderAmount"] < order.grayHolderAmount)
+		{
+			alert("Out of stock for gray holder");
+			return true;
+		}
+		console.log("Return true");
+		return false;
+	}).catch(error => {
+		alert("An error occurred. Please try again later.");
+		console.error(error);	
+		return true;
+	})
+}
+
 function postData() {
     order.dayAndTime = Date.now();
     console.log("Post data now");
 
-    fetch('???', {
+    fetch('http://localhost:3000/order', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -215,11 +254,15 @@ document.getElementById('isTranferred').addEventListener('change', function() {
     submitButton.disabled = !this.checked;
 });
 
-document.getElementById('checkout-btn').addEventListener('click', function(event) {
+document.getElementById('checkout-btn').addEventListener('click', async function(event) {
     event.preventDefault(); 
-	updateCustomerInfo();
-	setQR();
-	toggleBody();
+	let isOutofSTOCK = await isOutOfStock();
+	if (!isOutofSTOCK && validateCheckout())
+	{
+		updateCustomerInfo();
+		setQR();
+		toggleBody();
+	}
 });
 
 document.getElementById('back-btn').addEventListener("click", function(event) {
